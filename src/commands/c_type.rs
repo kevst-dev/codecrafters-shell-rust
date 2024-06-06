@@ -1,6 +1,7 @@
 use super::errors::CommandError;
 use super::{ShellCommand};
 use super::get_available_commands;
+use std::env;
 
 #[derive(Debug, PartialEq)]
 pub struct Type {
@@ -20,14 +21,41 @@ impl ShellCommand for Type {
     }
 
     fn run(&self) -> String {
+        // Busqueda de comandos de la Shell
         for command in &self.available_commands {
             if command == &self.input_command {
                 return format!("{} is a shell builtin", command);
             }
         }
 
+        // Busqueda de ejecutables
+        let binary_path = find_executable_program(&self.input_command);
+        if binary_path.is_some() {
+            return format!(
+                "{} is {}",
+                self.input_command,
+                binary_path.unwrap()
+            );
+        }
+
         format!("{} not found", self.input_command)
     }
+}
+
+fn find_executable_program(binary_name: &str) -> Option<String> {
+    let path_env = env::var("PATH").unwrap();
+    let dir_paths = path_env.split(':').collect::<Vec<&str>>();
+
+    for dir in dir_paths {
+        let binary_path = format!("{}/{}", dir, binary_name);
+        let posible_file = std::fs::metadata(&binary_path);
+
+        if posible_file.is_ok() {
+            return Some(binary_path);
+        }
+    }
+
+    None
 }
 
 #[cfg(test)]
@@ -89,8 +117,43 @@ mod tests {
         }
     }
 
+    // ---- -- test find_executable_program() -- ---- \\
+
     #[test]
-    fn test_evaluate_input_with_valid_command() {
+    fn test_find_executable_program() {
+        let frequent_executable = [
+            "ls",
+            "cat",
+        ];
+
+        for executable in frequent_executable {
+            let binary_path = find_executable_program(executable);
+
+            assert!(binary_path.is_some());
+        }
+    }
+
+    #[test]
+    fn test_find_executable_program_not_found() {
+        let not_executable = [
+            "hello",
+            "world",
+            "pineapple",
+            "strawberry",
+            "lorem",
+        ];
+
+        for executable in not_executable {
+            let binary_path = find_executable_program(executable);
+
+            assert!(binary_path.is_none());
+        }
+    }
+
+    // ---- -- test Self::run() -- ---- \\
+
+    #[test]
+    fn test_evaluate_input_with_valid_command_shell() {
         let commands = ["type", "echo", "exit"];
 
         for command in commands {
@@ -101,6 +164,40 @@ mod tests {
             let expected_msg = format!("{} is a shell builtin", command.input_command);
 
             let message = command.run();
+            assert_eq!(message, expected_msg);
         }
+    }
+
+    #[test]
+    fn test_evaluate_input_with_valid_executable_programs_in_path() {
+        let frequent_executable = [
+            "ls",
+            "cat",
+        ];
+
+        for executable in frequent_executable {
+            let command = Type {
+                available_commands: get_available_commands(),
+                input_command: executable.to_string(),
+            };
+            let start_msg = format!("{} is", executable);
+
+            let message = command.run();
+
+            assert!(message.starts_with(&start_msg));
+            assert!(message.ends_with(executable));
+        }
+    }
+
+    #[test]
+    fn test_evaluate_input_with_invalid_command() {
+        let command = Type {
+            available_commands: get_available_commands(),
+            input_command: "hello".to_string(),
+        };
+        let expected_msg = format!("hello not found");
+
+        let message = command.run();
+        assert_eq!(message, expected_msg);
     }
 }
