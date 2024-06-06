@@ -1,5 +1,4 @@
 use super::errors::CommandError;
-
 use super::ShellCommand;
 
 #[derive(Debug)]

@@ -4,6 +4,9 @@ use errors::CommandError;
 mod exit;
 use exit::Exit;
 
+mod echo;
+use echo::Echo;
+
 pub trait ShellCommand {
     fn new(args: Vec<String>) -> Result<Self, CommandError>
     where
@@ -12,9 +15,12 @@ pub trait ShellCommand {
     fn run(&self);
 }
 
-pub fn execute_command(command: &str, args: Vec<String>) {
+pub fn execute_command(command: &str, args: Vec<String>) -> Result<(), CommandError> {
     match command {
-        "exit" => Exit::new(args).unwrap().run(),
+        "exit" => Exit::new(args)?.run(),
+        "echo" => Echo::new(args)?.run(),
         _ => println!("{}: command not found", command),
     }
+
+    Ok(())
 }

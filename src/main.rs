@@ -25,6 +25,6 @@ fn main() {
         let args = command_and_arg[1..].to_vec();
         let args = args.iter().map(|s| s.to_string()).collect();
 
-        execute_command(command, args);
+        execute_command(command, args).unwrap();
     }
 }
