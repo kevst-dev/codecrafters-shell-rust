@@ -23,9 +23,12 @@ impl ShellCommand for Exit {
         }
     }
 
-    fn run(&self) {
+    fn run(&self) -> String {
         let exit_status = self.exit_status.unwrap_or(0);
         std::process::exit(exit_status);
+
+        #[allow(unreachable_code)]
+        "".to_string()
     }
 }
 

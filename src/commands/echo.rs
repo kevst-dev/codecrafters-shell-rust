@@ -13,8 +13,8 @@ impl ShellCommand for Echo {
         Ok(Self { text })
     }
 
-    fn run(&self) {
-        println!("{}", self.text);
+    fn run(&self) -> String {
+        format!("{}", self.text)
     }
 }
 
