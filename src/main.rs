@@ -22,7 +22,6 @@ fn process_command(command: &str) {
 fn main() {
     loop {
         let command = read_command();
-
         process_command(&command);
     }
 }
