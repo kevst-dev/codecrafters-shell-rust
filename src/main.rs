@@ -1,17 +1,28 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
 
-fn main() {
-    print!("$ ");
-    io::stdout().flush().unwrap();
+const PROMPT: &str = "$ ";
 
-    // Wait for user input
-    let stdin = io::stdin();
+fn read_command() -> String {
+    print!("{PROMPT}");
+    io::stdout().flush().expect("Failed to flush stdout");
+
     let mut input = String::new();
-    stdin.read_line(&mut input).unwrap();
+    io::stdin().read_line(&mut input).expect("Failed to read line from stdin");
 
-    // Process user input
-    let command = input.trim();
-    match command {
-        _ => println!("{}: command not found", &command),
-    }}
+    input.trim().to_string()
+}
+
+fn process_command(command: &str) {
+    match command.trim() {
+        _ => println!("{}: command not found", command),
+    }
+}
+
+fn main() {
+    loop {
+        let command = read_command();
+
+        process_command(&command);
+    }
+}
