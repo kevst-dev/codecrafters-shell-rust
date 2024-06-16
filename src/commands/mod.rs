@@ -33,6 +33,7 @@ pub fn execute_command(command: &str, args: Vec<String>) -> Result<(), CommandEr
         "echo" => Echo::new(args)?.run(),
         "type" => Type::new(args)?.run(),
         "pwd"  => Pwd::new(args)?.run(),
+        "cd"   => Cd::new(args)?.run(),
         _ => execute_external_command(command, args),
     };
 
@@ -49,5 +50,6 @@ pub fn get_available_commands() -> Vec<String> {
         "echo".to_string(),
         "type".to_string(),
         "pwd".to_string(),
+        "cd".to_string(),
     ]
 }
