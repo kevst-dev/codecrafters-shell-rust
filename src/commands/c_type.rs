@@ -38,7 +38,7 @@ impl ShellCommand for Type {
             );
         }
 
-        format!("{} not found", self.input_command)
+        format!("{}: not found", self.input_command)
     }
 }
 
