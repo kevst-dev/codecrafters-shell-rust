@@ -13,6 +13,9 @@ use c_type::Type;
 mod executable;
 use executable::execute_external_command;
 
+mod pwd;
+use pwd::Pwd;
+
 pub trait ShellCommand {
     fn new(args: Vec<String>) -> Result<Self, CommandError>
     where
@@ -26,6 +29,7 @@ pub fn execute_command(command: &str, args: Vec<String>) -> Result<(), CommandEr
         "exit" => Exit::new(args)?.run(),
         "echo" => Echo::new(args)?.run(),
         "type" => Type::new(args)?.run(),
+        "pwd"  => Pwd::new(args)?.run(),
         _ => execute_external_command(command, args),
     };
 

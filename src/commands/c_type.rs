@@ -146,7 +146,7 @@ mod tests {
             available_commands: get_available_commands(),
             input_command: "hello".to_string(),
         };
-        let expected_msg = format!("hello not found");
+        let expected_msg = format!("hello: not found");
 
         let message = command.run();
         assert_eq!(message, expected_msg);
