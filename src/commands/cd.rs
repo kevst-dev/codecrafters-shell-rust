@@ -26,7 +26,7 @@ impl ShellCommand for Cd {
     fn run(&self) -> String {
         let path = Path::new(&self.path);
 
-        if path.is_absolute() && path.exists() {
+        if path.exists() {
             env::set_current_dir(&path).unwrap();
 
             String::new()
