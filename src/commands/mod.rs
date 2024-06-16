@@ -16,6 +16,9 @@ use executable::execute_external_command;
 mod pwd;
 use pwd::Pwd;
 
+mod cd;
+use cd::Cd;
+
 pub trait ShellCommand {
     fn new(args: Vec<String>) -> Result<Self, CommandError>
     where
@@ -45,5 +48,6 @@ pub fn get_available_commands() -> Vec<String> {
         "exit".to_string(),
         "echo".to_string(),
         "type".to_string(),
+        "pwd".to_string(),
     ]
 }
