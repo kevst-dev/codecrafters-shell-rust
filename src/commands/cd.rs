@@ -24,6 +24,15 @@ impl ShellCommand for Cd {
     }
 
     fn run(&self) -> String {
+        if self.path == "~" {
+            let home = env::var("HOME").unwrap();
+            let path = Path::new(&home);
+
+            env::set_current_dir(&path).unwrap();
+
+            return String::new();
+        }
+
         let path = Path::new(&self.path);
 
         if path.exists() {
